@@ -1,5 +1,4 @@
 using System.Collections;
-using UnityEditor.EditorTools;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,13 +8,11 @@ public class ItemSpawn : MonoBehaviour
     public ItemA itemAPrefab;
 
     [Header("위치 좌표")]
-    [SerializeField] BoxCollider spawnArea;
+    [SerializeField] Renderer spawnArea;  //겉모습
     [SerializeField] private float randomY = 0.5f;
 
-    void Start()
-    {
-        
-    }
+    public Vector3 randomPos;
+
     private void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -51,21 +48,21 @@ public class ItemSpawn : MonoBehaviour
     {
         if (spawnArea == null || itemAPrefab == null) return;  
 
-        Vector3 spawnCenter = spawnArea.transform.position;
-        Vector3 spawnSize = spawnArea.size;
+        //Vector3 spawnCenter = spawnArea.transform.position;
+        Bounds spawnSize = spawnArea.bounds; //겉모습에서 나타내는 실제크기를 가져온다(bounds)
 
         for (int i = 0; i < UIManager.Instance.TargetCount; i++)
         {
-            float randomX = Random.Range(-spawnSize.x, spawnSize.x);
-            float randomZ = Random.Range(-spawnSize.z, spawnSize.z);
+            float randomX = Random.Range(spawnSize.min.x, spawnSize.max.x);
+            float randomZ = Random.Range(spawnSize.min.z, spawnSize.max.z);
 
-            Vector3 pos = new Vector3(randomX, randomY, randomZ);
+            randomPos = new Vector3(randomX, randomY, randomZ);
 
             ItemA itemA = PoolManager.Instance.GetFromPool(itemAPrefab);
 
             if (itemA != null)
             {
-                itemA.transform.SetLocalPositionAndRotation(pos, Quaternion.identity);
+                itemA.transform.SetLocalPositionAndRotation(randomPos, Quaternion.identity);
             }
         }
     }

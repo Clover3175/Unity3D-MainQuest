@@ -50,6 +50,7 @@ public class UIManager : MonoBehaviour
 
             if (GameClearUI != null)
             {
+
                 GameClearUI.SetActive(false);
             }
         }

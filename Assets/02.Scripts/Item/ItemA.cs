@@ -5,9 +5,13 @@ public class ItemA : MonoBehaviour
     [SerializeField] private Transform player;
     private ItemMagnet itemMagnet;
 
+    private ItemSpawn itemSpawn;
+
     private void Awake()
     {
         itemMagnet = GetComponent<ItemMagnet>();
+
+        itemSpawn = FindObjectOfType<ItemSpawn>();
 
         if (player == null)
         {
@@ -20,7 +24,12 @@ public class ItemA : MonoBehaviour
     }
     void Update()
     {
-        itemMagnet.Megnet(player, gameObject.transform);
+        if (!gameObject.activeSelf) return;
+
+        if (player != null)
+        {
+            itemMagnet.Megnet(player, gameObject.transform);
+        }
     }
     private void OnTriggerEnter(Collider collision)
     {
@@ -28,6 +37,10 @@ public class ItemA : MonoBehaviour
         {
             ReturnPool();
             UIManager.Instance.TakeCount();
+        }
+        if (collision.CompareTag("Building"))
+        {
+            gameObject.transform.position = itemSpawn.randomPos;
         }
     }
     private void ReturnPool()

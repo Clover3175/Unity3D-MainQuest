@@ -6,6 +6,8 @@ public class Player : MonoBehaviour
 
     private PlayerInput playerInput;
     private PlayerMove playerMove;
+    private PlayerAudio playerAudio;
+    private PlayerEffect playerEffect;
 
     private Vector3 inputVector;
 
@@ -13,12 +15,9 @@ public class Player : MonoBehaviour
     {
         playerInput = GetComponent<PlayerInput>();
         playerMove = GetComponent<PlayerMove>();
+        playerAudio = GetComponent<PlayerAudio>();
+        playerEffect = GetComponent<PlayerEffect>();
     }
-    void Start()
-    {
-
-    }
-
     void Update()
     {
         playerInput.InputKey();
@@ -28,5 +27,19 @@ public class Player : MonoBehaviour
         inputVector = playerInput.InputVector;
         playerMove.Move(inputVector);
     }
-    
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Item"))
+        {
+            if (playerAudio != null)
+            {
+                playerAudio.SoundNumber(0);
+            }
+            if(playerEffect != null)
+            {
+                playerEffect.PlayEffect();
+            }
+        }
+    }
+
 }

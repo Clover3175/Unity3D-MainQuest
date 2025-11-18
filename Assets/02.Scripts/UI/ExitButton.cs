@@ -7,10 +7,6 @@ public class ExitButton : MonoBehaviour
 {
     public void OnClick()
     {
-        #if UNITY_EDITOR
-           EditorApplication.ExitPlaymode();
-        #else
-           Application.Quit();
-        #endif
+        Application.Quit();
     }
 }

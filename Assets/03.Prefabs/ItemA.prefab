@@ -14,9 +14,9 @@ GameObject:
   - component: {fileID: 8198015973260131960}
   - component: {fileID: 8763360866739085970}
   - component: {fileID: 6674461457540765415}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: ItemA
-  m_TagString: Untagged
+  m_TagString: Item
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -132,5 +132,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08d00bee533e08c4ab42d156b8b75d9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collectDistance: 0.2
+  megnetDistance: 2
   megnetSpeed: 8

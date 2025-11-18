@@ -1,6 +1,7 @@
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.SocialPlatforms.Impl;
 
 public class GameManager : MonoBehaviour
@@ -16,8 +17,8 @@ public class GameManager : MonoBehaviour
     [Header("Player Info")]
     [SerializeField] private string defualtPlayerName = "Kim";
 
-    //public int Score { get; private set; }
     public string LastCheckPointId { get; private set; }
+
     private void Awake()
     {
         if (Instance == null)
@@ -29,23 +30,42 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
-    void Start()
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        GameObject isPlayer = GameObject.FindWithTag("Player");
+
+        if (player == null && isPlayer != null)
+        {
+            player = GameObject.Find("Player").GetComponent<Transform>();
+        }
+
+        GameObject savePoint = GameObject.Find("SavePoint");
+        if (checkPoint[0] == null && savePoint != null)
+        {
+            checkPoint[0] = savePoint.GetComponent<SavePoint>();
+        }
+
         if (SaveSystem.TryLoad(out var loaded))
         {
-            UIManager.Instance.TargetCount = loaded.score;
+            UIManager.Instance.TargetCount = UIManager.Instance.TargetCount;
             LastCheckPointId = loaded.lastCheckPointId;
 
             UIManager.Instance.CountUI();
             TelePortCheckPoint();
         }
-        else 
+        else
         {
             UIManager.Instance.TargetCount = UIManager.Instance.TargetCount;
             LastCheckPointId = null;
             UIManager.Instance.CountUI();
         }
+    }
+    void Start()
+    {
+        
     }
     //세이브 포인트에 도착했을때 호줄되는 메서드 -> 현재 플레이어의 정보
     public void SaveCheckPoint(string checkPointId)
@@ -57,14 +77,16 @@ public class GameManager : MonoBehaviour
             playerName = defualtPlayerName,
             score = UIManager.Instance.TargetCount,
             lastCheckPointId = LastCheckPointId,
+            sceneName = SceneManager.GetActiveScene().name
         };
         SaveSystem.Save(data);
     }
     //체크포인트 ID에 해당하는 지점을 찾아서 플레이어를 이동
-    private void TelePortCheckPoint()
+    public void TelePortCheckPoint()
     {
         if (string.IsNullOrEmpty(LastCheckPointId)) return;
         if (checkPoint == null || checkPoint.Length == 0) return;
+        if (player == null) return; 
 
         for (int i = 0; i < checkPoint.Length; i++)
         {
@@ -72,7 +94,7 @@ public class GameManager : MonoBehaviour
             if (cp == null) continue;
             if (cp.CheckPointId !=  LastCheckPointId) continue;
 
-            if (cp.CheckPointId != null)
+            if (cp.SpawnPoint != null)
             {
                 player.position = cp.SpawnPoint.position;
             }
@@ -80,6 +102,7 @@ public class GameManager : MonoBehaviour
             {
                 player.position = cp.transform.position;
             }
+            break;
         }
     }
 }

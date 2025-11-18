@@ -12,7 +12,6 @@ public class ItemMagnet : MonoBehaviour
         if (distace <= megnetDistance)
         {
             itemPos.position = Vector3.Lerp(itemPos.position, playerPos.position, megnetSpeed * Time.deltaTime);
-            Debug.Log("sss");
         }
     }
 }
